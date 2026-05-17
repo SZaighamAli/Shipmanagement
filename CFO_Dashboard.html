@@ -58,7 +58,7 @@ main{padding:24px 28px;max-width:1700px;margin:0 auto}
 .kpi-card.dn::before{background:var(--r)}
 .kpi-val{font-size:28px;font-weight:700;color:var(--p);letter-spacing:-.02em;line-height:1.15}
 .kpi-sub{font-size:12px;color:#6b7280;margin-top:5px;display:flex;align-items:center;gap:8px}
-.spark{height:34px;margin-top:10px;width:100%}
+
 .kpi-up{color:var(--g);font-weight:600}.kpi-down{color:var(--r);font-weight:600}
 .section-title{font-size:17px;font-weight:700;color:var(--p);margin:28px 0 14px;display:flex;align-items:center;gap:10px;letter-spacing:-.01em}
 .section-title svg{width:20px;height:20px}
@@ -68,9 +68,13 @@ td{padding:11px 13px;border-bottom:1px solid #f3f4f6}
 tr:hover td{background:#fdfbf6}
 .num{text-align:right;font-variant-numeric:tabular-nums}
 .pos{color:var(--g);font-weight:600}.neg{color:var(--r);font-weight:600}
-.chart-wrap{position:relative;height:340px;margin-top:8px}
-.chart-wrap-tall{position:relative;height:480px;margin-top:8px}
-.chart-wrap-sm{position:relative;height:240px;margin-top:8px}
+.chart-wrap{position:relative;height:340px !important;max-height:340px;margin-top:8px;overflow:hidden}
+.chart-wrap-tall{position:relative;height:480px !important;max-height:480px;margin-top:8px;overflow:hidden}
+.chart-wrap-sm{position:relative;height:240px !important;max-height:240px;margin-top:8px;overflow:hidden}
+.chart-wrap canvas,.chart-wrap-tall canvas,.chart-wrap-sm canvas{position:absolute !important;left:0;top:0;width:100% !important;height:100% !important;display:block}
+.spark-wrap{position:relative;height:34px;width:100%;margin-top:10px;overflow:hidden}
+.spark-wrap canvas{position:absolute !important;left:0;top:0;width:100% !important;height:100% !important;display:block}
+canvas{max-width:100%}
 .badge{display:inline-block;padding:4px 10px;border-radius:14px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
 .b-actual{background:#dde9e2;color:#3a5a4d}
 .b-budget{background:#f5e6cf;color:#7a5b1a}
@@ -330,25 +334,25 @@ function renderKPI(){
         <div class="card-title"><h3>Net Revenue</h3><div class="icon"><svg width="16" height="16"><use href="#i-kpi"/></svg></div></div>
         <div class="kpi-val">${fmt$M(netRev)}</div>
         <div class="kpi-sub">vs FY${String(state.year-1).slice(-2)}: <span class="${dNet>=0?'kpi-up':'kpi-down'}">${dNet>=0?'▲':'▼'} ${fmtPct(Math.abs(dNet))}</span></div>
-        <canvas class="spark" id="sp-rev"></canvas>
+        <div class="spark-wrap"><canvas id="sp-rev"></canvas></div>
       </div>
       <div class="card kpi-card ${dEb>=0?'up':'dn'}">
         <div class="card-title"><h3>EBITDA</h3><div class="icon"><svg width="16" height="16"><use href="#i-wf"/></svg></div></div>
         <div class="kpi-val">${fmt$M(ebitda)}</div>
         <div class="kpi-sub">Margin <span class="${margin>=0.4?'kpi-up':margin>=0.3?'':'kpi-down'}">${fmtPct(margin)}</span> · vs PY <span class="${dMg>=0?'kpi-up':'kpi-down'}">${dMg>=0?'+':''}${(dMg*100).toFixed(1)}pp</span></div>
-        <canvas class="spark" id="sp-eb"></canvas>
+        <div class="spark-wrap"><canvas id="sp-eb"></canvas></div>
       </div>
       <div class="card kpi-card">
         <div class="card-title"><h3>Total OPEX</h3><div class="icon"><svg width="16" height="16"><use href="#i-opex"/></svg></div></div>
         <div class="kpi-val">${fmt$M(opex)}</div>
         <div class="kpi-sub">${rows.length} vessel-months · ${fmt$(rows.length>0?opex/rows.length/30:0)}/day avg</div>
-        <canvas class="spark" id="sp-opex"></canvas>
+        <div class="spark-wrap"><canvas id="sp-opex"></canvas></div>
       </div>
       <div class="card kpi-card ${util>=0.8?'up':util>=0.7?'':'dn'}">
         <div class="card-title"><h3>Fleet Utilization</h3><div class="icon"><svg width="16" height="16"><use href="#i-anchor"/></svg></div></div>
         <div class="kpi-val">${fmtPct(util)}</div>
         <div class="kpi-sub">${fmtNum(daysOn)} on-hire / ${fmtNum(offHire)} off-hire days</div>
-        <canvas class="spark" id="sp-util"></canvas>
+        <div class="spark-wrap"><canvas id="sp-util"></canvas></div>
       </div>
     </div>
 
